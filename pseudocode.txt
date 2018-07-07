@@ -1,0 +1,2 @@
+created file structure for Hangman
+added Hangman object, wordsToPick, & initial variables in JS
