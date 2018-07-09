@@ -1,2 +1,3 @@
 created file structure for Hangman
 added Hangman object, wordsToPick, & initial variables in JS
+created html structure and centered it in hangman.css
