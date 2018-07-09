@@ -19,7 +19,7 @@ var hangmanGame = {
   lettersOfTheWord: [],
   matchedLetters: [],
   guessedLetters: [],
-  guessesLeft: 10,
+  guessesLeft: 0,
   totalGuesses: 0,
   letterGuessed: null,
   wins: 0,
@@ -37,6 +37,8 @@ var hangmanGame = {
     //The below builds the representation of the word to guess & displays it to the page
     //It will be all underscores to start ("_ _ _")
     this.rebuildWordView();
+    //This function sets the number of guesses the user gets and renders it to the HTML
+    this.processUpdateTotalGuesses();
   },
 
   //updatePage is run whenever the user guesses a letter..
@@ -76,9 +78,31 @@ var hangmanGame = {
 
       //Update guesses remaining and guessed letters on the page
       document.querySelector("#guesses-remaining").innerHTML = this.guessesLeft;
-      document.querySelector("#guessed-letters").innerHTML = this.guessedLetters.join(",");
+      document.querySelector("#guessed-letters").innerHTML = this.guessedLetters.join(", ");
     }
-  },  //function that displays the word to guess
+  },
+
+  //This function sets the initial guesses the user gets
+  processUpdateTotalGuesses: function () {
+    //The user will get more guesses the longer the word is
+    this.totalGuesses = this.lettersOfTheWord.length + 5;
+    this.guessesLeft = this.totalGuesses;
+    // render the "guesses-left" to the page
+    document.querySelector("#guesses-remaining").innerHTML = this.guessesLeft;
+  },
+  //This function governs what happens when the user makes a correct guess 
+  updateMatchedLetters: function (letter) {
+    // Loop through the letters of the "solution"
+    for (var i = 0; i < this.lettersOfTheWord.length; i++) {
+      //If the guessed letter is in the solution and we havn't guessed it yet
+      if ((letter === this.lettersOfTheWord[i]) && (this.matchedLetters.indexOf(letter) === -1)) {
+        //Push the newly guessed letter into the matchedLetters array
+        this.matchedLetters.push(letter);
+      }
+    }
+  },
+
+  //function that displays the word to guess
   rebuildWordView: function () {
     //We start with an empty string 
     var wordView = "";
@@ -91,7 +115,7 @@ var hangmanGame = {
       }
       //If the letter hasn't been guessed display an underscore "_"
       else {
-        wordView += "&nbsp;_&nbsp;"
+        wordView += "&nbsp;_&nbsp;";
       }
     }
     //Update the page with the new string we built
@@ -140,10 +164,10 @@ var hangmanGame = {
       //return true, which will trigger the restart of our game in the updatePage function.
       return true;
     }
-    //If win is false, return false to the updatePage function. 
+    //If win is false, return false to the updatePage function. The game continues!
     return false;
-  },
-}
+  }
+};
 //Initialize the game when the page loads
 hangmanGame.setupGame();
 
@@ -153,4 +177,6 @@ document.onkeyup = function (event) {
   hangmanGame.letterGuessed = String.fromCharCode(event.keyCode).toLowerCase();
   //We can see a console log of which letters the user guessed
   console.log(hangmanGame.letterGuessed);
+  //Pass the guessed letter into our updatePage function to run the game logic
+  hangmanGame.updatePage(hangmanGame.letterGuessed);
 }
