@@ -1,3 +1,5 @@
 created file structure for Hangman
 added Hangman object, wordsToPick, & initial variables in JS
 created html structure and centered it in hangman.css
+added setupGame and restartGame to JS file
+added rebuildWordView to JS

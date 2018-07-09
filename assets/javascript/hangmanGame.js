@@ -34,6 +34,9 @@ var hangmanGame = {
     console.log(this.wordInPlay);
     //Split the chosen word into its individaul letters
     this.lettersOfTheWord = this.wordInPlay.split("");
+    //The below builds the representation of the word to guess & displays it to the page
+    //It will be all underscores to start ("_ _ _")
+    this.rebuildWordView();
   },
 
   //Function that restarts the game by resetting all the variables
@@ -49,7 +52,25 @@ var hangmanGame = {
     this.setupGame();
   },
 
-
+  //function that displays the word to guess
+  rebuildWordView: function () {
+    //We start with an empty string 
+    var wordView = "";
+    //Loop through the letters of the word to guess
+    for (var i = 0; i < this.lettersOfTheWord.length;
+      i++) {
+      //If the letter has been guessed, display the letter
+      if (this.matchedLetters.indexOf(this.lettersOfTheWord[i]) !== -1) {
+        wordView += this.lettersOfTheWord[i];
+      }
+      //If the letter hasn't been guessed display an underscore "_"
+      else {
+        wordView += "&nbsp;_&nbsp;"
+      }
+    }
+    //Update the page with the new string we built
+    document.querySelector("#current-word").innerHTML = wordView;
+  },
 }
 //Initialize the game when the page loads
 hangmanGame.setupGame();
