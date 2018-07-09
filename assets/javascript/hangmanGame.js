@@ -39,6 +39,30 @@ var hangmanGame = {
     this.rebuildWordView();
   },
 
+  //updatePage is run whenever the user guesses a letter..
+  updatePage: function (letter) {
+    //If the user has no guesses left, restart the game
+    if (this.guessesLeft === 0) {
+      this.restartGame();
+    }
+    //If user still has guesses left
+    else {
+      //Check for & handle incorrect guesses
+      this.updateGuesses(letter);
+
+      //Check for & handle correct guesses
+      this.updateMatchedLetters(letter);
+
+      //Rebuild the view of the word. Guessed letters revealed, unguessed have an underscore
+      this.rebuildWordView();
+
+      //If the user wins restart the game
+      if (this.updateWins() === true) {
+        this.restartGame();
+      }
+    }
+  },
+
   //Function that restarts the game by resetting all the variables
   restartGame: function () {
     document.querySelector("#guessed-letters").innerHTML = "";
@@ -74,3 +98,11 @@ var hangmanGame = {
 }
 //Initialize the game when the page loads
 hangmanGame.setupGame();
+
+//When the user presses a key
+document.onkeyup = function (event) {
+  //Make the captured key and make it lowercase
+  hangmanGame.letterGuessed = String.fromCharCode(event.keyCode).toLowerCase();
+  //We can see a console log of which letters the user guessed
+  console.log(hangmanGame.letterGuessed);
+}
