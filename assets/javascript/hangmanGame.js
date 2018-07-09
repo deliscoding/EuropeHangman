@@ -19,7 +19,7 @@ var hangmanGame = {
   lettersOfTheWord: [],
   matchedLetters: [],
   guessedLetters: [],
-  guessesLeft: 0,
+  guessesLeft: 10,
   totalGuesses: 0,
   letterGuessed: null,
   wins: 0,
@@ -63,20 +63,22 @@ var hangmanGame = {
     }
   },
 
-  //Function that restarts the game by resetting all the variables
-  restartGame: function () {
-    document.querySelector("#guessed-letters").innerHTML = "";
-    this.wordInPlay = null;
-    this.lettersOfTheWord = [];
-    this.matchedLetters = [];
-    this.guessedLetters = [];
-    this.guessesLeft = 0;
-    this.totalGuesses = 0;
-    this.letterGuessed = null;
-    this.setupGame();
-  },
+  //This function deals with a user's incorrect guess
+  updateGuesses: function (letter) {
+    //If the letter is not in the guessedLetters array, and the letter is not in the lettersOfTheWord array..
+    if ((this.guessedLetters.indexOf(letter) === -1) && (this.lettersOfTheWord.indexOf(letter) === -1)) {
 
-  //function that displays the word to guess
+      //Add the letter to the guessedLetters array
+      this.guessedLetters.push(letter);
+
+      //Decrease guesses by one
+      this.guessesLeft--;
+
+      //Update guesses remaining and guessed letters on the page
+      document.querySelector("#guesses-remaining").innerHTML = this.guessesLeft;
+      document.querySelector("#guessed-letters").innerHTML = this.guessedLetters.join(",");
+    }
+  },  //function that displays the word to guess
   rebuildWordView: function () {
     //We start with an empty string 
     var wordView = "";
@@ -94,6 +96,52 @@ var hangmanGame = {
     }
     //Update the page with the new string we built
     document.querySelector("#current-word").innerHTML = wordView;
+  },
+
+  //Function that restarts the game by resetting all the variables
+  restartGame: function () {
+    document.querySelector("#guessed-letters").innerHTML = "";
+    this.wordInPlay = null;
+    this.lettersOfTheWord = [];
+    this.matchedLetters = [];
+    this.guessedLetters = [];
+    this.guessesLeft = 0;
+    this.totalGuesses = 0;
+    this.letterGuessed = null;
+    this.setupGame();
+  },
+  //function to see if the user has won
+  updateWins: function () {
+    var win;
+
+    //If you havn't correctly guessed a letter in the word yet, we set win to false.
+    if (this.matchedLetters.length === 0) {
+      win = false;
+    }
+    //Otherwise, we set win to true
+    else {
+      win = true;
+    }
+    //If all the letters in the word havn't been guessed yet, you don't win yet
+    for (var i = 0; i < this.lettersOfTheWord.length; i++) {
+      if (this.matchedLetters.indexOf(this.lettersOfTheWord[i]) === -1) {
+        win = false;
+      }
+    }
+    //If win is true...
+    if (win) {
+
+      //Increment wins
+      this.wins = this.wins + 1;
+
+      //Update wins on the page
+      document.querySelector("#wins").innerHTML = this.wins;
+
+      //return true, which will trigger the restart of our game in the updatePage function.
+      return true;
+    }
+    //If win is false, return false to the updatePage function. 
+    return false;
   },
 }
 //Initialize the game when the page loads

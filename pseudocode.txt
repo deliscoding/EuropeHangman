@@ -4,3 +4,4 @@ created html structure and centered it in hangman.css
 added setupGame and restartGame to JS file
 added rebuildWordView to JS
 added updatePage and document.onkeyup to JS
+added updateGuesses & updateWins
